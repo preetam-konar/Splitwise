@@ -23,7 +23,7 @@ create table `roles` (
 create table `user` (
 	`email` varchar(50) not null PRIMARY KEY,
 	`name` varchar(50) not null,
-	`upi_id` varchar(50) default null,
+	`phone_number` bigint not null unique,
 	key `fk_email_idx` (`email`),
 	constraint `fk_user_email` FOREIGN KEY (`email`) REFERENCES `users` (`email`)
 );
@@ -50,16 +50,15 @@ create table `expense` (
 	`name` varchar(50) not null,
 	`amount` int not null,
 	`paid_by` varchar(50) not null,
-	`share_count` int not null,
     key `fk_group_id_idx` (`group_id`),
     constraint `fk_expense_group_id` foreign key (`group_id`) references `group` (`id`)
 );
 
--- expense_share
-create table `expense_share` (
-	`expense_id` int not null,
+-- Join table user_expense
+create table `user_expense` (
 	`email` varchar(50) not null,
-	PRIMARY KEY (`expense_id`,`email`),
-	key `fk_expense_id_idx` (`expense_id`),
-	constraint `FK_expense_id` FOREIGN KEY (`expense_id`) REFERENCES `expense` (`id`)
-);
+	`expense_id` int not null,
+	PRIMARY KEY (`email`,`expense_id`),
+	FOREIGN KEY (`email`) REFERENCES `user` (`email`),
+	FOREIGN KEY (`expense_id`) REFERENCES `expense` (`id`)
+	)
